@@ -16,15 +16,17 @@ done
 
 
 export DEV="/mnt/x"
+export ZHOME="/mnt/x/zsh"
+alias zh="cd $ZHOME"
 alias dev="cd $DEV"
 alias react="cd $DEV/react"
 alias sysinfo="clear; neofetch --block_range 0 15"
 alias gs="git status"
-SCRIPTS="$HOME/scripts"
+export SCRIPTS="$ZHOME"
 alias scripts="cd $SCRIPTS"
 
-source ./scripts/show-colors.zsh
-source prompt.zsh
+source $ZHOME/show-colors.zsh
+source $ZHOME/prompt.zsh
 #replace ls to not show windows hidden files
 ls() {
   if test "${PWD##/mnt/}" != "${PWD}"; then
