@@ -92,7 +92,7 @@ build_prompt() {
     primaryTextColor=$fgWhite
     if [[ "$promptColor" != "Dark"* ]]
     then
-        _primaryTextColor="fgWhite"
+        _primaryTextColor="fgBlack"
         primaryTextColor=${(P)_primaryTextColor}
     fi
     secondaryTextColor=$fgWhite
@@ -118,6 +118,7 @@ build_prompt() {
         local fgTintColor=${(P)_fgTintColor}
         
         tintTextColor=$fgPromptColor
+        # tintTextColor=$fgBlack
         
         # pwdPath="$PWD"
         pwdPath=${promptState[pwdPath]}
@@ -196,7 +197,7 @@ build_prompt() {
         echo -n "$bgPromptColor$primaryTextColor  $folderIcon  $bgTintColor$secondaryTextColor  $pwdLeaf"
         if [[ "$pwdLeaf" != "$pwdPath" ]]
         then
-            echo -n " $tintTextColor $pwdParentPath"
+            echo -n " $tintTextColor""in $pwdParentPath"
         fi
         echo -n "$pad"
         echo "%k%f"

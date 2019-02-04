@@ -1,8 +1,14 @@
 # vim:ft=zsh ts=2 sw=2 sts=2
 
+# alias showprompt _showprompt=true
+function showprompt() {
+    _showprompt=true
+}
 # Arrays indexes in zsh start a 1!
-palette=("Blue" "Green" "Cyan" "Red" "Magenta" "Yellow"
-"DarkBlue" "DarkGreen" "DarkCyan" "DarkRed" "DarkMagenta" "DarkYellow")
+palette=(
+    "Blue" "Green" "Cyan" "Red" "Magenta" "Yellow"
+    # "DarkBlue" "DarkGreen" "DarkCyan" "DarkRed" "DarkMagenta" "DarkYellow"
+)
 
 let promptColor=1
 dynamicPromptColor="on"
@@ -133,7 +139,8 @@ computeState() {
     
     
     promptStateChanged=""
-    if [[   "${prevPromptState[pwdPath]}" != "${promptState[pwdPath]}" ||
+    if [[   -n $_showprompt ||
+            "${prevPromptState[pwdPath]}" != "${promptState[pwdPath]}" ||
             "${prevPromptState[gitRepoPath]}" != "${promptState[gitRepoPath]}" ||
             "${prevPromptState[gitStagedCount]}" != "${promptState[gitStagedCount]}" ||
             "${prevPromptState[gitUnstagedCount]}" != "${promptState[gitUnstagedCount]}" ||
@@ -148,6 +155,7 @@ computeState() {
         promptState[promptColor]=$palette[$promptColor]
     fi
     
+    unset _showprompt
     # if [[ -n $promptState ]]
     # then
     typeset -Ag prevPromptState
