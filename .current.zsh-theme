@@ -83,9 +83,23 @@ build_prompt() {
         if [[ "$promptColor" = "Dark"* ]]
         then
             tintColor="${promptColor#'Dark'}"
+            
         else
             tintColor="Dark$promptColor"
         fi
+    fi
+    
+    primaryTextColor=$fgWhite
+    if [[ "$promptColor" != "Dark"* ]]
+    then
+        _primaryTextColor="fgWhite"
+        primaryTextColor=${(P)_primaryTextColor}
+    fi
+    secondaryTextColor=$fgWhite
+    if [[ "$tintColor" != "Dark"* ]]
+    then
+        _secondaryTextColor="fgBlack"
+        secondaryTextColor=${(P)_secondaryTextColor}
     fi
     
     if [[ $timer = "on" ]]
@@ -103,7 +117,7 @@ build_prompt() {
         _fgTintColor="fg$tintColor"
         local fgTintColor=${(P)_fgTintColor}
         
-        secondaryTextColor=$fgPromptColor
+        tintTextColor=$fgPromptColor
         
         # pwdPath="$PWD"
         pwdPath=${promptState[pwdPath]}
@@ -179,10 +193,10 @@ build_prompt() {
         echo "%k"
         
         # Line 1
-        echo -n "$bgPromptColor  $folderIcon  $bgTintColor  $pwdLeaf"
+        echo -n "$bgPromptColor$primaryTextColor  $folderIcon  $bgTintColor$secondaryTextColor  $pwdLeaf"
         if [[ "$pwdLeaf" != "$pwdPath" ]]
         then
-            echo -n " $secondaryTextColor $pwdParentPath"
+            echo -n " $tintTextColor $pwdParentPath"
         fi
         echo -n "$pad"
         echo "%k%f"
@@ -201,16 +215,16 @@ build_prompt() {
             
             if [[ "$pwdPath" != "$gitRepoPath" ]]
             then
-                echo -n "$bgPromptColor  $gitLogo  $bgTintColor  $gitRepoLeaf"
+                echo -n "$bgPromptColor$primaryTextColor  $gitLogo  $bgTintColor$secondaryTextColor  $gitRepoLeaf"
                 echo -n "$pad"
                 echo "%k%f"
             fi
             
-            echo -n "$bgPromptColor  $gitBranchIcon  $bgTintColor  $gitBranch"
+            echo -n "$bgPromptColor$primaryTextColor  $gitBranchIcon  $bgTintColor$secondaryTextColor  $gitBranch"
             
             if [[ "${promptState[gitCommitCount]}" -eq 0 ]]
             then
-                echo -n " $secondaryTextColor(no commits)"
+                echo -n " $tintTextColor(no commits)"
             fi
             
             green="$fgGreen"
@@ -238,7 +252,7 @@ build_prompt() {
             
             if [[ -n "$gitRemoteName" && ("$gitRemoteName" != "$gitRepoLeaf") ]]
             then
-                echo -n "$bgPromptColor  $gitRemoteIcon $bgTintColor  $gitRemoteName"
+                echo -n "$bgPromptColor$primaryTextColor  $gitRemoteIcon $bgTintColor$secondaryTextColor  $gitRemoteName"
                 echo -n "$pad"
                 echo "%k%f"
             fi
