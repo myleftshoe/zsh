@@ -96,6 +96,8 @@ build_prompt() {
         _fgTintColor="fg$tintColor"
         local fgTintColor=${(P)_fgTintColor}
         
+        secondaryTextColor=$fgPromptColor
+        
         # pwdPath="$PWD"
         pwdPath=${promptState[pwdPath]}
         pwdLeaf=$(basename "$pwdPath")
@@ -180,7 +182,7 @@ build_prompt() {
         echo -n "$bgPromptColor  $folderIcon  $bgTintColor  $pwdLeaf"
         if [[ "$pwdLeaf" != "$pwdPath" ]]
         then
-            echo -n " $fgDarkGray $pwdParentPath"
+            echo -n " $secondaryTextColor $pwdParentPath"
         fi
         echo -n "$pad"
         echo "%k%f"
@@ -208,7 +210,7 @@ build_prompt() {
             
             if [[ "${promptState[gitCommitCount]}" -eq 0 ]]
             then
-                echo -n " $fgDarkGray(no commits)"
+                echo -n " $secondaryTextColor(no commits)"
             fi
             echo -n " $fgGreen$gitStagedCount"
             echo -n " $fgRed$gitUnstagedCount"
