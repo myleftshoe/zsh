@@ -172,7 +172,9 @@ build_prompt() {
         fi
         
         # Top Margin
-        echo -n "$bgPromptColor     $bgTintColor"
+        # \u00a0 is a non-breaking space - needed to the line visible when window width changed
+        # any non-visible char will work, or use any character with fg color set to bg.
+        echo -n "$bgPromptColor\u00a0    $bgTintColor$nbs\u00a0"
         echo -n "$pad"
         echo "%k"
         
@@ -210,9 +212,27 @@ build_prompt() {
             then
                 echo -n " $secondaryTextColor(no commits)"
             fi
-            echo -n " $fgGreen$gitStagedCount"
-            echo -n " $fgRed$gitUnstagedCount"
-            echo -n " $fgYellow$gitRemoteCommitDiffCount"
+            
+            green="$fgGreen"
+            red="$fgRed"
+            yellow="$fgYellow"
+            
+            if [[ $tintColor = "Green" ]]
+            then
+                green="$fgDarkGreen"
+            fi
+            if [[ $tintColor = "Red" ]]
+            then
+                red="$fgDarkRed"
+            fi
+            if [[ $tintColor = "Yellow" ]]
+            then
+                yellow="$fgDarkYellow"
+            fi
+            
+            echo -n " $green$gitStagedCount"
+            echo -n " $red$gitUnstagedCount"
+            echo -n " $yellow$gitRemoteCommitDiffCount"
             echo -n "$pad"
             echo "%k%f"
             
@@ -225,7 +245,7 @@ build_prompt() {
         fi #isGit
         
         # Bottom Margin
-        echo -n "$bgPromptColor     $bgTintColor"
+        echo -n "$bgPromptColor\u00a0    $bgTintColor\u00a0"
         echo -n "$pad"
         echo "%k"
     fi
