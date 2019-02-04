@@ -89,14 +89,8 @@ build_prompt() {
     fi
     
     # Show minimal prompt if state has not changed
-    if [[   "${prevPromptState[pwdPath]}" != "${promptState[pwdPath]}" ||
-            "${prevPromptState[gitRepoPath]}" != "${promptState[gitRepoPath]}" ||
-            "${prevPromptState[gitStagedCount]}" != "${promptState[gitStagedCount]}" ||
-            "${prevPromptState[gitUnstagedCount]}" != "${promptState[gitUnstagedCount]}" ||
-            "${prevPromptState[gitRemoteCommitDiffCount]}" != "${promptState[gitRemoteCommitDiffCount]}"
-    ]]
+    if [[ -n $promptStateChanged ]]
     then
-        
         _bgTintColor="bg$tintColor"
         local bgTintColor=${(P)_bgTintColor}
         _fgTintColor="fg$tintColor"

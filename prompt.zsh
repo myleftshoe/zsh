@@ -46,15 +46,9 @@ function set-timer() {
     fi
 }
 
-
+promptStateChanged=""
 computeState() {
     
-    if [[ -n $promptState ]]
-    then
-        typeset -Ag prevPromptState
-        prevPromptState=("${(@fkv)promptState}")
-        typeset prevPromptState
-    fi
     
     # Default state. Will be overidden in code below
     typeset -Ag promptState
@@ -66,23 +60,17 @@ computeState() {
     promptState[gitCommitCount]="0"
     promptState[gitStagedCount]="0"
     promptState[gitUnstagedCount]="0"
-    promptState[gitRemoteDiffCount]="0"
+    promptState[gitRemoteCommitDiffCount]="0"
     promptState[gitRepoPath]=""
     #   promptState[gitRepoLeaf]=""
     #   promptState[gitRemoteName]=""
     promptState[gitRemoteUrl]=""
     promptState[elapsed]=""
-    promptState[promptColor]="Blue"
+    promptState[promptColor]="${prevPromptState[promptColor]}"
     # End default state
     
     # $bgBlue="$fgBlue"
     # $_tintColor="$bgDarkBlue"
-    
-    if [[ $dynamicPromptColor = "on" ]]
-    then
-        nextPromptColor
-    fi
-    promptState[promptColor]=$palette[$promptColor]
     
     promptState[pwdPath]="$PWD"
     # pwdLeaf=$(basename "$pwdPath")
@@ -107,11 +95,11 @@ computeState() {
             secondChar=${line:1:1}
             if [[ $firstChar != " " ]]
             then
-                gitStagedCount++
+                ((gitStagedCount++))
             fi
             if [[ $secondChar != " " ]]
             then
-                gitUnstagedCount++
+                ((gitUnstagedCount++))
             fi
             promptState[gitStagedCount]=$gitStagedCount;
             promptState[gitUnstagedCount]=$gitUnstagedCount;
@@ -131,6 +119,41 @@ computeState() {
         fi
         
     fi #isGit
+    
+    # echo "0 ${prevPromptState[pwdPath]}"
+    # echo "1 ${promptState[pwdPath]}"
+    # echo "2 ${prevPromptState[gitRepoPath]}"
+    # echo "3 ${promptState[gitRepoPath]}"
+    # echo "4 ${prevPromptState[gitStagedCount]}"
+    # echo "5 ${promptState[gitStagedCount]}"
+    # echo "6 ${prevPromptState[gitUnstagedCount]}"
+    # echo "7 ${promptState[gitUnstagedCount]}"
+    # echo "8 ${prevPromptState[gitRemoteCommitDiffCount]}"
+    # echo "9 ${promptState[gitRemoteCommitDiffCount]}"
+    
+    
+    promptStateChanged=""
+    if [[   "${prevPromptState[pwdPath]}" != "${promptState[pwdPath]}" ||
+            "${prevPromptState[gitRepoPath]}" != "${promptState[gitRepoPath]}" ||
+            "${prevPromptState[gitStagedCount]}" != "${promptState[gitStagedCount]}" ||
+            "${prevPromptState[gitUnstagedCount]}" != "${promptState[gitUnstagedCount]}" ||
+            "${prevPromptState[gitRemoteCommitDiffCount]}" != "${promptState[gitRemoteCommitDiffCount]}"
+    ]]
+    then
+        promptStateChanged="true"
+        if [[ $dynamicPromptColor = "on" ]]
+        then
+            nextPromptColor
+        fi
+        promptState[promptColor]=$palette[$promptColor]
+    fi
+    
+    # if [[ -n $promptState ]]
+    # then
+    typeset -Ag prevPromptState
+    prevPromptState=("${(@fkv)promptState}")
+    typeset prevPromptState
+    # fi
     
 }
 
