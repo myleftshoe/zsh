@@ -88,6 +88,13 @@ build_prompt() {
         fi
     fi
     
+    if [[ $timer = "on" ]]
+    then
+        echo
+        prompt_time
+    fi
+    
+    
     # Show minimal prompt if state has not changed
     if [[ -n $promptStateChanged ]]
     then
@@ -103,18 +110,9 @@ build_prompt() {
         pwdLeaf=$(basename "$pwdPath")
         pwdParentPath=${pwdPath:a:h}
         
+        # echo
         echo
         
-        if [[ -n $elapsed ]]
-        then
-            echo
-        fi
-        if [[ $timer = "on" ]]
-        then
-            prompt_time
-        fi
-        
-        echo
         # isGit=$(git rev-parse --is-inside-work-tree 2> /dev/null)
         # if [[ -n $isGit ]]
         # then
