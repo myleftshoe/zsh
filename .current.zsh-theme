@@ -69,12 +69,36 @@ WriteLinePadded() {
 
 ## Main prompt
 build_prompt() {
-    # $bgBlue="$fgBlue"
+    # $bgPromptColor="$fgBlue"
     # $_tintColor="$bgDarkBlue"
+    local promptColor="${promptState[promptColor]}"
+    local _bgPromptColor="bg$promptColor"
+    local bgPromptColor=${(P)_bgPromptColor}
+    local _fgPromptColor="fg$promptColor"
+    local fgPromptColor=${(P)_fgPromptColor}
     
-    pwdPath="$PWD"
+    local tintColor="$promptColor"
+    if [[ "$promptColor" = "$tintColor" ]]
+    then
+        if [[ "$promptColor" = "Dark"* ]]
+        then
+            tintColor="${promptColor#'Dark'}"
+        else
+            tintColor="Dark$promptColor"
+        fi
+    fi
+    
+    _bgTintColor="bg$tintColor"
+    local bgTintColor=${(P)_bgTintColor}
+    _fgTintColor="fg$tintColor"
+    local fgTintColor=${(P)_fgTintColor}
+    
+    # pwdPath="$PWD"
+    pwdPath=${promptState[pwdPath]}
     pwdLeaf=$(basename "$pwdPath")
     pwdParentPath=${pwdPath:a:h}
+    
+    echo
     
     if [[ -n $elapsed ]]
     then
@@ -85,58 +109,52 @@ build_prompt() {
         prompt_time
     fi
     
-    #
-    # Populate vars
-    #
+    echo
+    # isGit=$(git rev-parse --is-inside-work-tree 2> /dev/null)
+    # if [[ -n $isGit ]]
+    # then
     
+    #     # gitBranch="(none)";
+    #     # gitBranch="$(git symbolic-ref --short HEAD)"
     
+    #     git_commitCount=0
+    #     git_commitCount="$(git rev-list --all --count)"
+    #     git_unstagedCount=0;
+    #     git_stagedCount=0;
     
-    is_git=$(git rev-parse --is-inside-work-tree 2> /dev/null)
-    if [[ -n $is_git ]]
-    then
-        
-        git_branch="(none)";
-        git_branch="$(git symbolic-ref --short HEAD)"
-        
-        git_commitCount=0
-        git_commitCount="$(git rev-list --all --count)"
-        
-        git_unstagedCount=0;
-        git_stagedCount=0;
-        git status --porcelain | while IFS= read -r line
-        do
-            firstChar=${line:0:1}
-            secondChar=${line:1:1}
-            if [[ $firstChar != " " ]]
-            then
-                (git_stagedCount++)
-            fi
-            if [[ $secondChar != " " ]]
-            then
-                (git_unstagedCount++)
-            fi
-            
-        done
-        
-        git_remoteCommitDiffCount=$(git rev-list HEAD...origin/master --count 2> /dev/null)
-        
-        gitRepoPath=$(git rev-parse --show-toplevel)
-        gitRepoLeaf=$(basename "$gitRepoPath")
-        
-        gitRemoteName=""
-        gitRemoteUrl=$(git remote get-url origin 2> /dev/null)
-        if [ -n "$gitRemoteUrl" ]
-        then
-            gitRemoteName=${$(basename "$gitRemoteUrl"):r}
-        fi
-        
-    fi #is_git
+    #     git status --porcelain | while IFS= read -r line
+    #     do
+    #         firstChar=${line:0:1}
+    #         secondChar=${line:1:1}
+    #         if [[ $firstChar != " " ]]
+    #         then
+    #             (git_stagedCount++)
+    #         fi
+    #         if [[ $secondChar != " " ]]
+    #         then
+    #             (git_unstagedCount++)
+    #         fi
+    
+    #     done
+    
+    #     git_remoteCommitDiffCount=$(git rev-list HEAD...origin/master --count 2> /dev/null)
+    
+    #     gitRepoPath=$(git rev-parse --show-toplevel)
+    #     gitRepoLeaf=$(basename "$gitRepoPath")
+    
+    #     gitRemoteName=""
+    #     gitRemoteUrl=$(git remote get-url origin 2> /dev/null)
+    #     if [ -n "$gitRemoteUrl" ]
+    #     then
+    #         gitRemoteName=${$(basename "$gitRemoteUrl"):r}
+    #     fi
+    
+    # fi #isGit
     
     
     #
     # Draw prompt
     #
-    
     if [[ "$pwdPath" = "$HOME" ]]
     then
         if [[ "$pwdPath" = "$_HOME" ]]
@@ -151,12 +169,12 @@ build_prompt() {
     fi
     
     # Top Margin
-    echo -n "$bgBlue     $bgCyan"
+    echo -n "$bgPromptColor     $bgTintColor"
     echo -n "$pad"
     echo "%k"
     
     # Line 1
-    echo -n "$bgBlue  $folderIcon  $bgCyan $pwdLeaf"
+    echo -n "$bgPromptColor  $folderIcon  $bgTintColor  $pwdLeaf"
     if [[ "$pwdLeaf" != "$pwdPath" ]]
     then
         echo -n " $fgDarkGray $pwdParentPath"
@@ -165,42 +183,51 @@ build_prompt() {
     echo "%k%f"
     
     # Line 2
-    if [[ -n $is_git ]]
+    if [[ -n "${promptState[isGit]}" ]]
     then
+        
+        gitBranch="${promptState[gitBranch]}"
+        gitRepoPath="${promptState[gitRepoPath]}"
+        gitRepoLeaf="$(basename "$gitRepoPath")"
+        gitRemoteName="${promptState[gitRemoteName]}"
+        gitStagedCount="${promptState[gitStagedCount]}"
+        gitUnstagedCount="${promptState[gitUnstagedCount]}"
+        gitRemoteCommitDiffCount="${promptState[gitRemoteCommitDiffCount]}"
         
         if [[ "$pwdPath" != "$gitRepoPath" ]]
         then
-            echo -n "$bgBlue  $gitLogo  $bgCyan $gitRepoLeaf"
+            echo -n "$bgPromptColor  $gitLogo  $bgTintColor  $gitRepoLeaf"
             echo -n "$pad"
             echo "%k%f"
         fi
         
-        echo -n "$bgBlue  $gitBranchIcon  $bgCyan $git_branch"
+        echo -n "$bgPromptColor  $gitBranchIcon  $bgTintColor  $gitBranch"
         
-        if [[ $git_commitCount -eq 0 ]]
+        if [[ "${promptState[gitCommitCount]}" -eq 0 ]]
         then
             echo -n " $fgDarkGray(no commits)"
         fi
-        echo -n " $fgGreen$git_stagedCount"
-        echo -n " $fgRed$git_unstagedCount"
-        echo -n " $fgYellow$git_remoteCommitDiffCount"
+        echo -n " $fgGreen$gitStagedCount"
+        echo -n " $fgRed$gitUnstagedCount"
+        echo -n " $fgYellow$gitRemoteCommitDiffCount"
         echo -n "$pad"
         echo "%k%f"
         
         if [[ -n "$gitRemoteName" && ("$gitRemoteName" != "$gitRepoLeaf") ]]
         then
-            echo -n "$bgBlue  $gitRemoteIcon $bgCyan $gitRemoteName"
+            echo -n "$bgPromptColor  $gitRemoteIcon $bgTintColor  $gitRemoteName"
             echo -n "$pad"
             echo "%k%f"
         fi
-    fi #is_git
+    fi #isGit
     
     # Bottom Margin
-    echo -n "$bgBlue     $bgCyan"
+    echo -n "$bgPromptColor     $bgTintColor"
     echo -n "$pad"
     echo "%k"
+    echo
     
-    echo "%F{$fgBlue} %f"
+    echo "$fgPromptColor %f"
 }
 
 PROMPT='$(build_prompt) '

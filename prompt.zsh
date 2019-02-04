@@ -2,63 +2,84 @@
 
 
 function preexec() {
-  echo
-  _timer=$(($(date +%s%N)/1000000))
+    echo
+    _timer=$(($(date +%s%N)/1000000))
 }
 
+# Arrays indexes in zsh start a 1!
+palette=("Blue" "Green" "Cyan" "Red" "Magenta" "Yellow"
+"DarkBlue" "DarkGreen" "DarkCyan" "DarkRed" "DarkMagenta" "DarkYellow")
 
-promptColor=11
+fgBlack="%{\e[30m%}";
+fgDarkBlue="%{\e[34m%}";
+fgDarkGreen="%{\e[32m%}";
+fgDarkCyan="%{\e[36m%}";
+fgDarkRed="%{\e[31m%}";
+fgDarkMagenta="%{\e[35m%}";
+fgDarkYellow="%{\e[33m%}";
+fgGray="%{\e[37m%}";
+#fgExtended="%{\e[38m%}";
+#fgDefault="%{\e[39m%}";
+fgDarkGray="%{\e[90m%}";
+fgBlue="%{\e[94m%}";
+fgGreen="%{\e[92m%}";
+fgCyan="%{\e[96m%}";
+fgRed="%{\e[91m%}";
+fgMagenta="%{\e[95m%}";
+fgYellow="%{\e[93m%}";
+fgWhite="%{\e[97m%}";
+
+
+let promptColor=1
 dynamicPromptColor="on"
 nextPromptColor() {
-    ((promptColor++))
-    if [[ $promptColor -gt 15 ]]
+    if [ $promptColor -lt 1 -o $promptColor -ge $#palette ]
     then
-    	promptColor=1
-	fi
+        promptColor=1
+    fi
+    ((promptColor++))
 }
 
 function precmd() {
-  if [[ $dynamicPromptColor = "on" ]]
-  then
-  	nextPromptColor
-  fi
-  unset elapsed
-  if [ $_timer ]; then
-    now=$(($(date +%s%N)/1000000))
-    elapsed=$(($now-$_timer))
-    unset _timer
-  fi
-  computeState
+    unset elapsed
+    if [ $_timer ]
+    then
+        now=$(($(date +%s%N)/1000000))
+        elapsed=$(($now-$_timer))
+        unset _timer
+    fi
+    computeState
 }
 
 
 timer="on"
 function set-timer() {
-	if [[ $1 = "on" ]]
-	then
-		timer="on"
-	fi
-	if [[ $1 = "off" ]]
-	then
-		timer="off"
-	fi
+    if [[ $1 = "on" ]]
+    then
+        timer="on"
+    fi
+    if [[ $1 = "off" ]]
+    then
+        timer="off"
+    fi
 }
 
 
 
 computeState() {
-
+    
     if [[ -n $promptState ]]
     then
         typeset -Ag prevPromptState
         prevPromptState=("${(@fkv)promptState}")
         typeset prevPromptState
-    fi    
-
+    fi
+    
+    # Default state. Will be overidden in code below
     typeset -Ag promptState
     promptState[pwdPath]=""
-#   promptState[pwdLeaf]=""
-#   promptState[pwdParentPath]=""
+    #   promptState[pwdLeaf]=""
+    #   promptState[pwdParentPath]=""
     promptState[isGit]=""
     promptState[gitBranch]="(none)"
     promptState[gitCommitCount]="0"
@@ -66,21 +87,29 @@ computeState() {
     promptState[gitUnstagedCount]="0"
     promptState[gitRemoteDiffCount]="0"
     promptState[gitRepoPath]=""
-#   promptState[gitRepoLeaf]=""
-#   promptState[gitRemoteName]=""
+    #   promptState[gitRepoLeaf]=""
+    #   promptState[gitRemoteName]=""
     promptState[gitRemoteUrl]=""
     promptState[elapsed]=""
+    promptState[promptColor]="Blue"
+    # End default state
     
-
     # $bgBlue="$fgBlue"
     # $_tintColor="$bgDarkBlue"
     
-    promptState[pwdPath]="$PWD"
-    pwdLeaf=$(basename "$pwdPath")
-    pwdParentPath=${pwdPath:a:h}
+    if [[ $dynamicPromptColor = "on" ]]
+    then
+        nextPromptColor
+    fi
+    promptState[promptColor]=$palette[$promptColor]
     
-    is_git=$(git rev-parse --is-inside-work-tree 2> /dev/null)
-    if [[ -n $is_git ]]
+    promptState[pwdPath]="$PWD"
+    # pwdLeaf=$(basename "$pwdPath")
+    # pwdParentPath=${pwdPath:a:h}
+    
+    isGit=$(git rev-parse --is-inside-work-tree 2> /dev/null)
+    promptState[isGit]="$isGit"
+    if [[ -n $isGit ]]
     then
         
         # git_branch="(none)"
@@ -103,15 +132,15 @@ computeState() {
             then
                 gitUnstagedCount++
             fi
-            promptState[gitStagedCount]=gitStagedCount;
-            promptState[gitUnstagedCount]=gitUnstagedCount;
+            promptState[gitStagedCount]=$gitStagedCount;
+            promptState[gitUnstagedCount]=$gitUnstagedCount;
             
         done
         
         promptState[gitRemoteCommitDiffCount]=$(git rev-list HEAD...origin/master --count 2> /dev/null)
         
         promptState[gitRepoPath]=$(git rev-parse --show-toplevel)
-        promptState[gitRepoLeaf]=$(basename "$gitRepoPath")
+        # promptState[gitRepoLeaf]=$(basename "$gitRepoPath")
         
         # gitRemoteName=""
         promptState[gitRemoteUrl]=$(git remote get-url origin 2> /dev/null)
@@ -120,7 +149,7 @@ computeState() {
             promptState[gitRemoteName]=${$(basename "$gitRemoteUrl"):r}
         fi
         
-    fi #is_git
+    fi #isGit
     
 }
 
