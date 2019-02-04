@@ -6,7 +6,7 @@ function showprompt() {
 }
 # Arrays indexes in zsh start a 1!
 palette=(
-    "Blue" "Green" "Cyan" "Red" "Magenta" "Yellow"
+    "Blue" "Green" "Cyan" "Red" "Magenta" "Yellow" "Gray"
     # "DarkBlue" "DarkGreen" "DarkCyan" "DarkRed" "DarkMagenta" "DarkYellow"
 )
 
@@ -59,8 +59,6 @@ computeState() {
     # Default state. Will be overidden in code below
     typeset -Ag promptState
     promptState[pwdPath]=""
-    #   promptState[pwdLeaf]=""
-    #   promptState[pwdParentPath]=""
     promptState[isGit]=""
     promptState[gitBranch]="(none)"
     promptState[gitCommitCount]="0"
@@ -68,19 +66,12 @@ computeState() {
     promptState[gitUnstagedCount]="0"
     promptState[gitRemoteCommitDiffCount]="0"
     promptState[gitRepoPath]=""
-    #   promptState[gitRepoLeaf]=""
-    #   promptState[gitRemoteName]=""
     promptState[gitRemoteUrl]=""
     promptState[elapsed]=""
     promptState[promptColor]="${prevPromptState[promptColor]}"
     # End default state
     
-    # $bgBlue="$fgBlue"
-    # $_tintColor="$bgDarkBlue"
-    
     promptState[pwdPath]="$PWD"
-    # pwdLeaf=$(basename "$pwdPath")
-    # pwdParentPath=${pwdPath:a:h}
     
     isGit=$(git rev-parse --is-inside-work-tree 2> /dev/null)
     promptState[isGit]="$isGit"
@@ -90,7 +81,6 @@ computeState() {
         # git_branch="(none)"
         promptState[gitBranch]="$(git symbolic-ref --short HEAD)"
         
-        #git_commitCount=0
         promptState[gitCommitCount]="$(git rev-list --all --count)"
         
         gitUnstagedCount=0
@@ -115,14 +105,8 @@ computeState() {
         promptState[gitRemoteCommitDiffCount]=$(git rev-list HEAD...origin/master --count 2> /dev/null)
         
         promptState[gitRepoPath]=$(git rev-parse --show-toplevel)
-        # promptState[gitRepoLeaf]=$(basename "$gitRepoPath")
         
-        # gitRemoteName=""
         promptState[gitRemoteUrl]=$(git remote get-url origin 2> /dev/null)
-        if [ -n "$gitRemoteUrl" ]
-        then
-            promptState[gitRemoteName]=${$(basename "$gitRemoteUrl"):r}
-        fi
         
     fi #isGit
     
@@ -156,12 +140,10 @@ computeState() {
     fi
     
     unset _showprompt
-    # if [[ -n $promptState ]]
-    # then
+    
     typeset -Ag prevPromptState
     prevPromptState=("${(@fkv)promptState}")
     typeset prevPromptState
-    # fi
     
 }
 

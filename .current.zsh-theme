@@ -49,9 +49,8 @@ pad="%{\e[400@%}"
 
 
 prompt_time() {
-    #    echo -n "     %F{11}%f "
     echo -n "%F{8}%D{%H:%M:%S}%f"
-    # elapsed is set in .zshrc precmd()
+    # elapsed is set in prompt.zsh function precmd()
     if [[ -n $elapsed ]]
     then
         echo -n " ($elapsed ms)"
@@ -59,18 +58,9 @@ prompt_time() {
     echo
 }
 
-
-
-WriteLinePadded() {
-    echo -n "$*"
-    echo "%{\e[400@%}"
-    echo "%{\e[0m%}"
-}
-
 ## Main prompt
 build_prompt() {
-    # $bgPromptColor="$fgBlue"
-    # $_tintColor="$bgDarkBlue"
+    
     local promptColor="${promptState[promptColor]}"
     local _bgPromptColor="bg$promptColor"
     local bgPromptColor=${(P)_bgPromptColor}
@@ -89,16 +79,17 @@ build_prompt() {
         fi
     fi
     
-    primaryTextColor=$fgWhite
+    local primaryTextColor=$fgWhite
     if [[ "$promptColor" != "Dark"* ]]
     then
-        _primaryTextColor="fgBlack"
+        local _primaryTextColor="fgBlack"
         primaryTextColor=${(P)_primaryTextColor}
     fi
-    secondaryTextColor=$fgWhite
+    
+    local secondaryTextColor=$fgWhite
     if [[ "$tintColor" != "Dark"* ]]
     then
-        _secondaryTextColor="fgBlack"
+        local _secondaryTextColor="fgBlack"
         secondaryTextColor=${(P)_secondaryTextColor}
     fi
     
@@ -120,55 +111,11 @@ build_prompt() {
         tintTextColor=$fgPromptColor
         # tintTextColor=$fgBlack
         
-        # pwdPath="$PWD"
         pwdPath=${promptState[pwdPath]}
         pwdLeaf=$(basename "$pwdPath")
         pwdParentPath=${pwdPath:a:h}
         
-        # echo
         echo
-        
-        # isGit=$(git rev-parse --is-inside-work-tree 2> /dev/null)
-        # if [[ -n $isGit ]]
-        # then
-        
-        #     # gitBranch="(none)";
-        #     # gitBranch="$(git symbolic-ref --short HEAD)"
-        
-        #     git_commitCount=0
-        #     git_commitCount="$(git rev-list --all --count)"
-        #     git_unstagedCount=0;
-        #     git_stagedCount=0;
-        
-        #     git status --porcelain | while IFS= read -r line
-        #     do
-        #         firstChar=${line:0:1}
-        #         secondChar=${line:1:1}
-        #         if [[ $firstChar != " " ]]
-        #         then
-        #             (git_stagedCount++)
-        #         fi
-        #         if [[ $secondChar != " " ]]
-        #         then
-        #             (git_unstagedCount++)
-        #         fi
-        
-        #     done
-        
-        #     git_remoteCommitDiffCount=$(git rev-list HEAD...origin/master --count 2> /dev/null)
-        
-        #     gitRepoPath=$(git rev-parse --show-toplevel)
-        #     gitRepoLeaf=$(basename "$gitRepoPath")
-        
-        #     gitRemoteName=""
-        #     gitRemoteUrl=$(git remote get-url origin 2> /dev/null)
-        #     if [ -n "$gitRemoteUrl" ]
-        #     then
-        #         gitRemoteName=${$(basename "$gitRemoteUrl"):r}
-        #     fi
-        
-        # fi #isGit
-        
         
         #
         # Draw prompt
@@ -187,7 +134,7 @@ build_prompt() {
         fi
         
         # Top Margin
-        # \u00a0 is a non-breaking space - needed to the line visible when window width changed
+        # \u00a0 is a non-breaking space - keeps line visible when window width changed -
         # any non-visible char will work, or use any character with fg color set to bg.
         echo -n "$bgPromptColor\u00a0    $bgTintColor$nbs\u00a0"
         echo -n "$pad"
@@ -209,7 +156,11 @@ build_prompt() {
             gitBranch="${promptState[gitBranch]}"
             gitRepoPath="${promptState[gitRepoPath]}"
             gitRepoLeaf="$(basename "$gitRepoPath")"
-            gitRemoteName="${promptState[gitRemoteName]}"
+            gitRemoteUrl="${promptState[gitRemoteUrl]}"
+            if [ -n "$gitRemoteUrl" ]
+            then
+                gitRemoteName=${$(basename "$gitRemoteUrl"):r}
+            fi
             gitStagedCount="${promptState[gitStagedCount]}"
             gitUnstagedCount="${promptState[gitUnstagedCount]}"
             gitRemoteCommitDiffCount="${promptState[gitRemoteCommitDiffCount]}"
@@ -221,6 +172,7 @@ build_prompt() {
                 echo "%k%f"
             fi
             
+            # Line 3
             echo -n "$bgPromptColor$primaryTextColor  $gitBranchIcon  $bgTintColor$secondaryTextColor  $gitBranch"
             
             if [[ "${promptState[gitCommitCount]}" -eq 0 ]]
@@ -251,6 +203,7 @@ build_prompt() {
             echo -n "$pad"
             echo "%k%f"
             
+            # Line 4
             if [[ -n "$gitRemoteName" && ("$gitRemoteName" != "$gitRepoLeaf") ]]
             then
                 echo -n "$bgPromptColor$primaryTextColor  $gitRemoteIcon $bgTintColor$secondaryTextColor  $gitRemoteName"
@@ -263,10 +216,11 @@ build_prompt() {
         echo -n "$bgPromptColor\u00a0    $bgTintColor\u00a0"
         echo -n "$pad"
         echo "%k"
-    fi
+    fi #isGit
     
     echo
     echo "$fgPromptColor %f"
+    
 }
 
 PROMPT='$(build_prompt) '
