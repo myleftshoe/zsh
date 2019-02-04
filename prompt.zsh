@@ -5,16 +5,15 @@ function showprompt() {
     _showprompt=true
 }
 # Arrays indexes in zsh start a 1!
-palette=(
-    "Blue" "Green" "Cyan" "Red" "Magenta" "Yellow" "Gray"
-    # "DarkBlue" "DarkGreen" "DarkCyan" "DarkRed" "DarkMagenta" "DarkYellow"
-)
+# palette=("Blue" "Green" "Cyan" "Red" "Magenta" "Yellow" "Gray")
+palette=("DarkBlue" "DarkGreen" "DarkCyan" "DarkRed" "DarkMagenta" "DarkYellow" "DarkGray")
 
 let promptColor=1
 dynamicPromptColor="on"
 nextPromptColor() {
     if [ $promptColor -lt 1 -o $promptColor -ge $#palette ]
     then
+        # array indexes start at 1!
         promptColor=1
     fi
     ((promptColor++))
