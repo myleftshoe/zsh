@@ -1,34 +1,8 @@
 # vim:ft=zsh ts=2 sw=2 sts=2
 
-
-function preexec() {
-    echo
-    _timer=$(($(date +%s%N)/1000000))
-}
-
 # Arrays indexes in zsh start a 1!
 palette=("Blue" "Green" "Cyan" "Red" "Magenta" "Yellow"
 "DarkBlue" "DarkGreen" "DarkCyan" "DarkRed" "DarkMagenta" "DarkYellow")
-
-fgBlack="%{\e[30m%}";
-fgDarkBlue="%{\e[34m%}";
-fgDarkGreen="%{\e[32m%}";
-fgDarkCyan="%{\e[36m%}";
-fgDarkRed="%{\e[31m%}";
-fgDarkMagenta="%{\e[35m%}";
-fgDarkYellow="%{\e[33m%}";
-fgGray="%{\e[37m%}";
-#fgExtended="%{\e[38m%}";
-#fgDefault="%{\e[39m%}";
-fgDarkGray="%{\e[90m%}";
-fgBlue="%{\e[94m%}";
-fgGreen="%{\e[92m%}";
-fgCyan="%{\e[96m%}";
-fgRed="%{\e[91m%}";
-fgMagenta="%{\e[95m%}";
-fgYellow="%{\e[93m%}";
-fgWhite="%{\e[97m%}";
-
 
 let promptColor=1
 dynamicPromptColor="on"
@@ -40,6 +14,14 @@ nextPromptColor() {
     ((promptColor++))
 }
 
+# Runs before a command entered on the command line is executed
+# Not run if no command entered
+function preexec() {
+    echo
+    _timer=$(($(date +%s%N)/1000000))
+}
+
+# Runs before prompt is displayed
 function precmd() {
     unset elapsed
     if [ $_timer ]
@@ -63,7 +45,6 @@ function set-timer() {
         timer="off"
     fi
 }
-
 
 
 computeState() {

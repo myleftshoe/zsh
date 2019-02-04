@@ -88,145 +88,155 @@ build_prompt() {
         fi
     fi
     
-    _bgTintColor="bg$tintColor"
-    local bgTintColor=${(P)_bgTintColor}
-    _fgTintColor="fg$tintColor"
-    local fgTintColor=${(P)_fgTintColor}
-    
-    # pwdPath="$PWD"
-    pwdPath=${promptState[pwdPath]}
-    pwdLeaf=$(basename "$pwdPath")
-    pwdParentPath=${pwdPath:a:h}
-    
-    echo
-    
-    if [[ -n $elapsed ]]
+    # Show minimal prompt if state has not changed
+    if [[   "${prevPromptState[pwdPath]}" != "${promptState[pwdPath]}" ||
+            "${prevPromptState[gitRepoPath]}" != "${promptState[gitRepoPath]}" ||
+            "${prevPromptState[gitStagedCount]}" != "${promptState[gitStagedCount]}" ||
+            "${prevPromptState[gitUnstagedCount]}" != "${promptState[gitUnstagedCount]}" ||
+            "${prevPromptState[gitRemoteCommitDiffCount]}" != "${promptState[gitRemoteCommitDiffCount]}"
+    ]]
     then
+        
+        _bgTintColor="bg$tintColor"
+        local bgTintColor=${(P)_bgTintColor}
+        _fgTintColor="fg$tintColor"
+        local fgTintColor=${(P)_fgTintColor}
+        
+        # pwdPath="$PWD"
+        pwdPath=${promptState[pwdPath]}
+        pwdLeaf=$(basename "$pwdPath")
+        pwdParentPath=${pwdPath:a:h}
+        
         echo
-    fi
-    if [[ $timer = "on" ]]
-    then
-        prompt_time
-    fi
-    
-    echo
-    # isGit=$(git rev-parse --is-inside-work-tree 2> /dev/null)
-    # if [[ -n $isGit ]]
-    # then
-    
-    #     # gitBranch="(none)";
-    #     # gitBranch="$(git symbolic-ref --short HEAD)"
-    
-    #     git_commitCount=0
-    #     git_commitCount="$(git rev-list --all --count)"
-    #     git_unstagedCount=0;
-    #     git_stagedCount=0;
-    
-    #     git status --porcelain | while IFS= read -r line
-    #     do
-    #         firstChar=${line:0:1}
-    #         secondChar=${line:1:1}
-    #         if [[ $firstChar != " " ]]
-    #         then
-    #             (git_stagedCount++)
-    #         fi
-    #         if [[ $secondChar != " " ]]
-    #         then
-    #             (git_unstagedCount++)
-    #         fi
-    
-    #     done
-    
-    #     git_remoteCommitDiffCount=$(git rev-list HEAD...origin/master --count 2> /dev/null)
-    
-    #     gitRepoPath=$(git rev-parse --show-toplevel)
-    #     gitRepoLeaf=$(basename "$gitRepoPath")
-    
-    #     gitRemoteName=""
-    #     gitRemoteUrl=$(git remote get-url origin 2> /dev/null)
-    #     if [ -n "$gitRemoteUrl" ]
-    #     then
-    #         gitRemoteName=${$(basename "$gitRemoteUrl"):r}
-    #     fi
-    
-    # fi #isGit
-    
-    
-    #
-    # Draw prompt
-    #
-    if [[ "$pwdPath" = "$HOME" ]]
-    then
-        if [[ "$pwdPath" = "$_HOME" ]]
+        
+        if [[ -n $elapsed ]]
         then
-            folderIcon="≋"
-        else
-            folderIcon="~"
+            echo
         fi
-    elif [[ "$pwdPath" = "$_HOME" ]]
-    then
-        folderIcon="≈"
-    fi
-    
-    # Top Margin
-    echo -n "$bgPromptColor     $bgTintColor"
-    echo -n "$pad"
-    echo "%k"
-    
-    # Line 1
-    echo -n "$bgPromptColor  $folderIcon  $bgTintColor  $pwdLeaf"
-    if [[ "$pwdLeaf" != "$pwdPath" ]]
-    then
-        echo -n " $fgDarkGray $pwdParentPath"
-    fi
-    echo -n "$pad"
-    echo "%k%f"
-    
-    # Line 2
-    if [[ -n "${promptState[isGit]}" ]]
-    then
-        
-        gitBranch="${promptState[gitBranch]}"
-        gitRepoPath="${promptState[gitRepoPath]}"
-        gitRepoLeaf="$(basename "$gitRepoPath")"
-        gitRemoteName="${promptState[gitRemoteName]}"
-        gitStagedCount="${promptState[gitStagedCount]}"
-        gitUnstagedCount="${promptState[gitUnstagedCount]}"
-        gitRemoteCommitDiffCount="${promptState[gitRemoteCommitDiffCount]}"
-        
-        if [[ "$pwdPath" != "$gitRepoPath" ]]
+        if [[ $timer = "on" ]]
         then
-            echo -n "$bgPromptColor  $gitLogo  $bgTintColor  $gitRepoLeaf"
-            echo -n "$pad"
-            echo "%k%f"
+            prompt_time
         fi
         
-        echo -n "$bgPromptColor  $gitBranchIcon  $bgTintColor  $gitBranch"
+        echo
+        # isGit=$(git rev-parse --is-inside-work-tree 2> /dev/null)
+        # if [[ -n $isGit ]]
+        # then
         
-        if [[ "${promptState[gitCommitCount]}" -eq 0 ]]
+        #     # gitBranch="(none)";
+        #     # gitBranch="$(git symbolic-ref --short HEAD)"
+        
+        #     git_commitCount=0
+        #     git_commitCount="$(git rev-list --all --count)"
+        #     git_unstagedCount=0;
+        #     git_stagedCount=0;
+        
+        #     git status --porcelain | while IFS= read -r line
+        #     do
+        #         firstChar=${line:0:1}
+        #         secondChar=${line:1:1}
+        #         if [[ $firstChar != " " ]]
+        #         then
+        #             (git_stagedCount++)
+        #         fi
+        #         if [[ $secondChar != " " ]]
+        #         then
+        #             (git_unstagedCount++)
+        #         fi
+        
+        #     done
+        
+        #     git_remoteCommitDiffCount=$(git rev-list HEAD...origin/master --count 2> /dev/null)
+        
+        #     gitRepoPath=$(git rev-parse --show-toplevel)
+        #     gitRepoLeaf=$(basename "$gitRepoPath")
+        
+        #     gitRemoteName=""
+        #     gitRemoteUrl=$(git remote get-url origin 2> /dev/null)
+        #     if [ -n "$gitRemoteUrl" ]
+        #     then
+        #         gitRemoteName=${$(basename "$gitRemoteUrl"):r}
+        #     fi
+        
+        # fi #isGit
+        
+        
+        #
+        # Draw prompt
+        #
+        if [[ "$pwdPath" = "$HOME" ]]
         then
-            echo -n " $fgDarkGray(no commits)"
+            if [[ "$pwdPath" = "$_HOME" ]]
+            then
+                folderIcon="≋"
+            else
+                folderIcon="~"
+            fi
+        elif [[ "$pwdPath" = "$_HOME" ]]
+        then
+            folderIcon="≈"
         fi
-        echo -n " $fgGreen$gitStagedCount"
-        echo -n " $fgRed$gitUnstagedCount"
-        echo -n " $fgYellow$gitRemoteCommitDiffCount"
+        
+        # Top Margin
+        echo -n "$bgPromptColor     $bgTintColor"
+        echo -n "$pad"
+        echo "%k"
+        
+        # Line 1
+        echo -n "$bgPromptColor  $folderIcon  $bgTintColor  $pwdLeaf"
+        if [[ "$pwdLeaf" != "$pwdPath" ]]
+        then
+            echo -n " $fgDarkGray $pwdParentPath"
+        fi
         echo -n "$pad"
         echo "%k%f"
         
-        if [[ -n "$gitRemoteName" && ("$gitRemoteName" != "$gitRepoLeaf") ]]
+        # Line 2
+        if [[ -n "${promptState[isGit]}" ]]
         then
-            echo -n "$bgPromptColor  $gitRemoteIcon $bgTintColor  $gitRemoteName"
+            
+            gitBranch="${promptState[gitBranch]}"
+            gitRepoPath="${promptState[gitRepoPath]}"
+            gitRepoLeaf="$(basename "$gitRepoPath")"
+            gitRemoteName="${promptState[gitRemoteName]}"
+            gitStagedCount="${promptState[gitStagedCount]}"
+            gitUnstagedCount="${promptState[gitUnstagedCount]}"
+            gitRemoteCommitDiffCount="${promptState[gitRemoteCommitDiffCount]}"
+            
+            if [[ "$pwdPath" != "$gitRepoPath" ]]
+            then
+                echo -n "$bgPromptColor  $gitLogo  $bgTintColor  $gitRepoLeaf"
+                echo -n "$pad"
+                echo "%k%f"
+            fi
+            
+            echo -n "$bgPromptColor  $gitBranchIcon  $bgTintColor  $gitBranch"
+            
+            if [[ "${promptState[gitCommitCount]}" -eq 0 ]]
+            then
+                echo -n " $fgDarkGray(no commits)"
+            fi
+            echo -n " $fgGreen$gitStagedCount"
+            echo -n " $fgRed$gitUnstagedCount"
+            echo -n " $fgYellow$gitRemoteCommitDiffCount"
             echo -n "$pad"
             echo "%k%f"
-        fi
-    fi #isGit
+            
+            if [[ -n "$gitRemoteName" && ("$gitRemoteName" != "$gitRepoLeaf") ]]
+            then
+                echo -n "$bgPromptColor  $gitRemoteIcon $bgTintColor  $gitRemoteName"
+                echo -n "$pad"
+                echo "%k%f"
+            fi
+        fi #isGit
+        
+        # Bottom Margin
+        echo -n "$bgPromptColor     $bgTintColor"
+        echo -n "$pad"
+        echo "%k"
+    fi
     
-    # Bottom Margin
-    echo -n "$bgPromptColor     $bgTintColor"
-    echo -n "$pad"
-    echo "%k"
     echo
-    
     echo "$fgPromptColor %f"
 }
 
