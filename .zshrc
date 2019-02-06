@@ -48,7 +48,6 @@ alias get~~='echo "\n $_HOME"'
 
 # ~ goes to home folder, ~~ will now go to $_HOME
 alias ~~='cd $_HOME'
-alias go~~='cd $_HOME'
 
 # z - for jumping around folders
 source ~/z.sh
