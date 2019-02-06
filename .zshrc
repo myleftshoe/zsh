@@ -6,7 +6,7 @@ $SHELL --version
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
-# uncomment this and change ls alias to something else e.g to use pretzo success
+# uncomment this and change ls alias to something else e.g to use prezto success
 # # Source Prezto.
 # if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 #     source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
@@ -25,6 +25,7 @@ done
 
 export DEV="/mnt/x"
 export ZHOME="/mnt/x/zsh"
+alias ~~='cd $_HOME'
 alias zh="cd $ZHOME"
 alias dev="cd $DEV"
 alias rel="cd $DEV/releases"
@@ -37,6 +38,15 @@ alias pp="showprompt"
 alias ton="set-timer on"
 alias toff="set-timer off"
 
+# Set Start Dir - command prompt will show paths relative to this
+set~~() {
+    _HOME=$PWD
+    echo
+    echo Start folder set to $_HOME
+    echo
+}
+alias get~~='echo "\n $_HOME"'
+
 source $ZHOME/show-colors.zsh
 #replace ls to not show windows hidden files
 ls() {
@@ -48,19 +58,6 @@ ls() {
         /bin/ls "$@"
     fi
 }
-
-# Set Start Dir - command prompt will show paths relative to this
-set~~() {
-    _HOME=$PWD
-    echo
-    echo Start folder set to $_HOME
-    echo
-}
-
-alias get~~='echo "\n $_HOME"'
-
-# ~ goes to home folder, ~~ will now go to $_HOME
-alias ~~='cd $_HOME'
 
 # z - for jumping around folders
 source ~/z.sh
