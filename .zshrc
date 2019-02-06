@@ -10,8 +10,8 @@ alias drives="df | grep -o '^.:'"
 # Create windows drive aliases e.g. c: x: m:
 drives | while read -r line
 do
-  driveLetter=${line:0:1:l}
-  alias $driveLetter:="cd /mnt/$driveLetter"
+    driveLetter=${line:0:1:l}
+    alias $driveLetter:="cd /mnt/$driveLetter"
 done
 
 
@@ -19,31 +19,33 @@ export DEV="/mnt/x"
 export ZHOME="/mnt/x/zsh"
 alias zh="cd $ZHOME"
 alias dev="cd $DEV"
+alias rel="cd $DEV/releases"
 alias react="cd $DEV/react"
 alias sysinfo="clear; neofetch --block_range 0 15"
 alias gs="git status"
 export SCRIPTS="$ZHOME"
 alias scripts="cd $SCRIPTS"
+alias pp="showprompt"
 
 source $ZHOME/show-colors.zsh
 source $ZHOME/prompt.zsh
 #replace ls to not show windows hidden files
 ls() {
-  if test "${PWD##/mnt/}" != "${PWD}"; then
-     cmd.exe /D /A /C 'dir /B /AH 2> nul' \
-       | sed 's/^/-I/' | tr -d '\r' | tr '\n' '\0' \
-       | xargs -0 /bin/ls "$@"
-  else
-    /bin/ls "$@"
-fi
+    if test "${PWD##/mnt/}" != "${PWD}"; then
+        cmd.exe /D /A /C 'dir /B /AH 2> nul' \
+        | sed 's/^/-I/' | tr -d '\r' | tr '\n' '\0' \
+        | xargs -0 /bin/ls "$@"
+    else
+        /bin/ls "$@"
+    fi
 }
 
 # Set Start Dir - command prompt will show paths relative to this
 set~~() {
-  _HOME=$PWD
-  echo
-  echo Start folder set to $_HOME
-  echo
+    _HOME=$PWD
+    echo
+    echo Start folder set to $_HOME
+    echo
 }
 
 alias get~~='echo "\n $_HOME"'
@@ -63,7 +65,7 @@ set~~
 
 #********************* OH-MY-ZSH SETTINGS ************************
 
-ZSH_THEME="/../../.current"
+# ZSH_THEME="/../../prompt-themes/panel"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -106,22 +108,22 @@ ZSH_THEME="/../../.current"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-#  git
-#  node
-#  npm
-#  vscode
-  extract
-  zsh-syntax-highlighting
-  zsh-autosuggestions
-  command-not-found
-#  vi-mode
+    #  git
+    #  node
+    #  npm
+    #  vscode
+    extract
+    zsh-syntax-highlighting
+    zsh-autosuggestions
+    command-not-found
+    #  vi-mode
 )
 
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
-
 source $ZSH/oh-my-zsh.sh
 
+source prompt-themes/panel.zsh-theme
 #Change ls colours
 LS_COLORS="ow=01;36;40" && export LS_COLORS
 
@@ -129,4 +131,3 @@ LS_COLORS="ow=01;36;40" && export LS_COLORS
 zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
 autoload -Uz compinit
 compinit
-
