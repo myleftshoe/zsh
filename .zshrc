@@ -28,7 +28,7 @@ alias scripts="cd $SCRIPTS"
 alias pp="showprompt"
 
 source $ZHOME/show-colors.zsh
-source $ZHOME/prompt.zsh
+source $ZHOME/.prompt/.prompt.zsh
 #replace ls to not show windows hidden files
 ls() {
     if test "${PWD##/mnt/}" != "${PWD}"; then
@@ -123,7 +123,7 @@ plugins=(
 export ZSH=$HOME/.oh-my-zsh
 source $ZSH/oh-my-zsh.sh
 
-source prompt-themes/panel.zsh-theme
+source .prompt/panel.zsh-theme
 #Change ls colours
 LS_COLORS="ow=01;36;40" && export LS_COLORS
 
