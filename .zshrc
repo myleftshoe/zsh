@@ -37,8 +37,6 @@ alias scripts="cd $SCRIPTS"
 alias pp="showprompt"
 alias ton="set-timer on"
 alias toff="set-timer off"
-export GO="$DEV/.go"
-alias go="cd $GO"
 
 # Set Start Dir - command prompt will show paths relative to this
 set~~() {
@@ -71,5 +69,20 @@ source $ZHOME/.prompt/panel.zsh-theme
 export PATH=$PATH:$HOME/Library/Python/2.7/bin
 
 set~~
+
+export GO="$DEV/.go"
+alias go="noglob _go"
+function _go() {
+    if [[ -n $1 ]] {
+        m="$GO/$1"
+        paths=(${~m})
+        target=$(readlink ${paths[1]})
+        cd $target
+        return
+    }
+    cd $GO
+    ls
+}
+
 
 #[ "$PWD" = "$HOME" ] && neofetch
