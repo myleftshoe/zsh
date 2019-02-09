@@ -92,8 +92,8 @@ function _go() {
         cd $target
         return
     }
-    cd $GO
-    ls
+    # cd $GO
+    ls $GO
 }
 
 alias $="cd $DEV/$"
