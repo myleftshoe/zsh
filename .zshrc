@@ -37,6 +37,8 @@ alias scripts="cd $SCRIPTS"
 alias pp="showprompt"
 alias ton="set-timer on"
 alias toff="set-timer off"
+export GO="$DEV/.go"
+alias go="cd $GO"
 
 # Set Start Dir - command prompt will show paths relative to this
 set~~() {
@@ -64,7 +66,7 @@ source ~/z.sh
 
 source $ZHOME/.ohmy.zsh
 source $ZHOME/.prompt/.prompt.zsh
-source .prompt/panel.zsh-theme
+source $ZHOME/.prompt/panel.zsh-theme
 
 export PATH=$PATH:$HOME/Library/Python/2.7/bin
 
