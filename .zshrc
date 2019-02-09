@@ -74,6 +74,17 @@ export GO="$DEV/$/go"
 alias go="noglob _go"
 function _go() {
     mkdir -p $GO
+    if [[ $1 = '+' ]] {
+        name=$(basename "$PWD")
+        linkPath="$GO/$name"
+        if ln -s $PWD "$linkPath" 2>/dev/null
+        then
+            echo "Created $linkPath"
+        else
+            echo "$linkPath already exists!"
+        fi
+        return
+    }
     if [[ -n $1 ]] {
         m="$GO/$1"
         paths=(${~m})
