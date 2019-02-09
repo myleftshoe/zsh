@@ -24,7 +24,7 @@ done
 
 
 export DEV="/mnt/x"
-export ZHOME="/mnt/x/zsh"
+export ZHOME="/mnt/x/$/zsh"
 alias ~~='cd $_HOME'
 alias zh="cd $ZHOME"
 alias dev="cd $DEV"
@@ -70,9 +70,10 @@ export PATH=$PATH:$HOME/Library/Python/2.7/bin
 
 set~~
 
-export GO="$DEV/.go"
+export GO="$DEV/$/go"
 alias go="noglob _go"
 function _go() {
+    mkdir -p $GO
     if [[ -n $1 ]] {
         m="$GO/$1"
         paths=(${~m})
@@ -84,5 +85,5 @@ function _go() {
     ls
 }
 
-
+alias $="cd $DEV/$"
 #[ "$PWD" = "$HOME" ] && neofetch
