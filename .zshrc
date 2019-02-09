@@ -26,7 +26,7 @@ done
 export DEV="/mnt/x"
 export ZHOME="/mnt/x/$/zsh"
 alias ~~='cd $_HOME'
-alias zh="cd $ZHOME"
+alias zed="cd $ZHOME"
 alias dev="cd $DEV"
 alias rel="cd $DEV/releases"
 alias react="cd $DEV/react"
@@ -66,11 +66,12 @@ source $ZHOME/.ohmy.zsh
 source $ZHOME/.prompt/.prompt.zsh
 source $ZHOME/.prompt/panel.zsh-theme
 
-export PATH=$PATH:$HOME/Library/Python/2.7/bin
+export PATH=$ZHOME/bin:$PATH:$HOME/Library/Python/2.7/bin
 
 set~~
 
 export GO="$DEV/$/go"
+export GOLNK="$DEV/$/golnk"
 alias go="noglob _go"
 function _go() {
     mkdir -p $GO
@@ -83,6 +84,20 @@ function _go() {
         else
             echo "$linkPath already exists!"
         fi
+        # Create a windows shortcut!
+        # wslpath converts unix path to windows
+        # mslink is available here :
+        # http://www.mamachine.org/mslink/index.en.html
+        msLinkPath=$(wslpath -w "$PWD")
+        msOutPath="$GOLNK/$name.lnk"
+        # echo "$msLinkPath"
+        # echo "$msOutPath"
+        if mslink -l $msLinkPath -o $msOutPath 1>/dev/null 2>/dev/null
+        then
+            echo "Created shortcut $msLinkPath"
+        else
+            echo "Failed to create shortcut: $msOutPath"
+        fi
         return
     }
     if [[ -n $1 ]] {
@@ -93,8 +108,10 @@ function _go() {
         return
     }
     # cd $GO
-    ls $GO
+    ls -1 $GO
 }
+
+alias gogo="cd $GO; ls -1"
 
 alias $="cd $DEV/$"
 #[ "$PWD" = "$HOME" ] && neofetch
