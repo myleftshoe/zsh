@@ -75,6 +75,10 @@ export GOLNK="$DEV/$/golnk"
 # function go+ { pwsh.exe -Command "go +" }
 alias go="noglob _go"
 function _go() {
+    local target
+    local names
+    local m
+    local paths
     mkdir -p $GO
     if [[ $1 = '+' ]] {
         pwsh.exe -Command "go +" > /tmp/gotmp

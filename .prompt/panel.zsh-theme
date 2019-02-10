@@ -124,9 +124,11 @@ build_prompt() {
         then
             if [[ "$pwdPath" = "$_HOME" ]]
             then
-                folderIcon="≋"
+                # folderIcon="≋"
+                folderIcon="ﲋ"
             else
-                folderIcon="~"
+                # folderIcon="~"
+                folderIcon="ﰣ"
             fi
         elif [[ "$pwdPath" = "$_HOME" ]]
         then
