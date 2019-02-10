@@ -109,6 +109,8 @@ function _go() {
     for (( i = 1; i <= $#names; i++ ))
     do
         printf "%2s$i $(basename $names[i])\n"
+        # name="$(basename $names[i])"
+        # printf "$format" i $name $names[i]
     done
     # ls -1 $GO
 }
