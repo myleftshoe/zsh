@@ -72,33 +72,38 @@ set~~
 
 export GO="$DEV/$/go"
 export GOLNK="$DEV/$/golnk"
+# function go+ { pwsh.exe -Command "go +" }
 alias go="noglob _go"
 function _go() {
     mkdir -p $GO
     if [[ $1 = '+' ]] {
-        name=$(basename "$PWD")
-        linkPath="$GO/$name"
-        if ln -s $PWD "$linkPath" 2>/dev/null
-        then
-            echo "Created $linkPath"
-        else
-            echo "$linkPath already exists!"
-        fi
-        # Create a windows shortcut!
-        # wslpath converts unix path to windows
-        # mslink is available here :
-        # http://www.mamachine.org/mslink/index.en.html
-        msLinkPath=$(wslpath -w "$PWD")
-        msOutPath="$GOLNK/$name.lnk"
-        # echo "$msLinkPath"
-        # echo "$msOutPath"
-        if mslink -l $msLinkPath -o $msOutPath 1>/dev/null 2>/dev/null
-        then
-            echo "Created shortcut $msLinkPath"
-        else
-            echo "Failed to create shortcut: $msOutPath"
-        fi
-        return
+        # savedPWD=$PWD
+        pwsh.exe -Command "go +"
+        # cd $savedPWD
+        # echo $savedPWD
+        # name=$(basename "$PWD")
+        # linkPath="$GO/$name"
+        # if ln -s $PWD "$linkPath" 2>/dev/null
+        # then
+        #     echo "Created $linkPath"
+        # else
+        #     echo "$linkPath already exists!"
+        # fi
+        # # Create a windows shortcut!
+        # # wslpath converts unix path to windows
+        # # mslink is available here :
+        # # http://www.mamachine.org/mslink/index.en.html
+        # msLinkPath=$(wslpath -w "$PWD")
+        # msOutPath="$GOLNK/$name.lnk"
+        # # echo "$msLinkPath"
+        # # echo "$msOutPath"
+        # if mslink -l $msLinkPath -o $msOutPath 1>/dev/null 2>/dev/null
+        # then
+        #     echo "Created shortcut $msLinkPath"
+        # else
+        #     echo "Failed to create shortcut: $msOutPath"
+        # fi
+        # return
     }
     if [[ -n $1 ]] {
         m="$GO/$1"
