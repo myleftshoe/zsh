@@ -77,46 +77,39 @@ alias go="noglob _go"
 function _go() {
     mkdir -p $GO
     if [[ $1 = '+' ]] {
-        # savedPWD=$PWD
         pwsh.exe -Command "go +" > /tmp/gotmp
         cat /tmp/gotmp | grep --color=never -F '[GO]'
         rm /tmp/gotmp
         return
-        # cd $savedPWD
-        # echo $savedPWD
-        # name=$(basename "$PWD")
-        # linkPath="$GO/$name"
-        # if ln -s $PWD "$linkPath" 2>/dev/null
-        # then
-        #     echo "Created $linkPath"
-        # else
-        #     echo "$linkPath already exists!"
-        # fi
-        # # Create a windows shortcut!
-        # # wslpath converts unix path to windows
-        # # mslink is available here :
-        # # http://www.mamachine.org/mslink/index.en.html
-        # msLinkPath=$(wslpath -w "$PWD")
-        # msOutPath="$GOLNK/$name.lnk"
-        # # echo "$msLinkPath"
-        # # echo "$msOutPath"
-        # if mslink -l $msLinkPath -o $msOutPath 1>/dev/null 2>/dev/null
-        # then
-        #     echo "Created shortcut $msLinkPath"
-        # else
-        #     echo "Failed to create shortcut: $msOutPath"
-        # fi
-        # return
     }
+    names=($GO/*)
     if [[ -n $1 ]] {
-        m="$GO/$1"
-        paths=(${~m})
-        target=$(readlink ${paths[1]})
+        if [[ $1 =~ ^[0-9]+$ && $1 -gt 0 && $1 -le $#names ]]
+        then
+            target="$names[$1]"
+            # echo $target
+            # cd $target
+        else
+            set nonomatch
+            m="$GO/$1"
+            paths=(${~m})
+            target=$(readlink ${paths[1]})
+            # cd $target
+        fi
+        # return
+        
+    }
+    echo $target
+    if [[ -n $target ]]
+    then
         cd $target
         return
-    }
-    # cd $GO
-    ls -1 $GO
+    fi
+    for (( i = 1; i <= $#names; i++ ))
+    do
+        printf "%2s$i $(basename $names[i])\n"
+    done
+    # ls -1 $GO
 }
 
 alias gogo="cd $GO; ls -1"
