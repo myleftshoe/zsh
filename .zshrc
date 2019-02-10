@@ -1,10 +1,4 @@
 $SHELL --version
-#
-# Executes commands at the start of an interactive session.
-#
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
-#
 
 # uncomment this and change ls alias to something else e.g to use prezto success
 # # Source Prezto.
@@ -21,6 +15,7 @@ do
     driveLetter=${line:0:1:l}
     alias $driveLetter:="cd /mnt/$driveLetter"
 done
+unset driveLetter
 
 
 export DEV="/mnt/x"
