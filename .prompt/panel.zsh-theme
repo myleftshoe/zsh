@@ -219,7 +219,7 @@ build_prompt() {
     fi #isGit
     
     echo
-    echo "$fgPromptColor %f"
+    echo "$fgPromptColor ❱❱❱%f"
     
 }
 
