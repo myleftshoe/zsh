@@ -78,7 +78,10 @@ function _go() {
     mkdir -p $GO
     if [[ $1 = '+' ]] {
         # savedPWD=$PWD
-        pwsh.exe -Command "go +"
+        pwsh.exe -Command "go +" > /tmp/gotmp
+        cat /tmp/gotmp | grep --color=never -F '[GO]'
+        rm /tmp/gotmp
+        return
         # cd $savedPWD
         # echo $savedPWD
         # name=$(basename "$PWD")
