@@ -90,7 +90,8 @@ function _go() {
             # echo $target
             # cd $target
         else
-            set nonomatch
+            # set nonomatch
+            unsetopt nomatch
             m="$GO/$1"
             paths=(${~m})
             target=$(readlink ${paths[1]})
@@ -99,7 +100,7 @@ function _go() {
         # return
         
     }
-    echo $target
+    # echo $target
     if [[ -n $target ]]
     then
         cd $target
