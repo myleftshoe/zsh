@@ -115,7 +115,8 @@ function _go() {
     # ls -1 $GO
 }
 
-alias gogo="cd $GO; ls -1"
+alias gogo="cd $GO"
+# alias gogo="cd $GO; ls -1"
 
 alias $="cd $DEV/$"
 #[ "$PWD" = "$HOME" ] && neofetch
