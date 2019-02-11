@@ -111,6 +111,15 @@ function _go() {
         # name="$(basename $names[i])"
         # printf "$format" i $name $names[i]
     done
+    echo
+    echo -n "go: "
+    local id
+    read id
+    if [[ $id =~ ^[0-9]+$ && $id -gt 0 && $id -le $#names ]]
+    then
+        target="$names[$id]"
+        cd $target
+    fi
     # ls -1 $GO
 }
 
