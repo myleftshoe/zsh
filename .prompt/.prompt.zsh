@@ -26,15 +26,37 @@ function preexec() {
     _timer=$(($(date +%s%N)/1000000))
 }
 
-# Runs before prompt is displayed
-function precmd() {
-    unset elapsed
-    if [ $_timer ]
+function showTime() {
+    if [[ $timer = "on" ]]
     then
-        now=$(($(date +%s%N)/1000000))
-        elapsed=$(($now-$_timer))
+        echo
+        echo -n "\e[90m"
+        echo -n $(date +%H:%M:%S)
+        echo -n "\e[0m"
+        local elapsed
+        # echo -n "%F{8}%D{%H:%M:%S}%f"
+        if [ $_timer ]
+        then
+            local now=$(($(date +%s%N)/1000000))
+            elapsed=$(($now-$_timer))
+            if [ $elapsed -ge 1000 ]
+            then
+                local _elapsed=$(echo "scale=2; $elapsed/1000" | bc)
+                elapsed="$_elapsed s"
+            else
+                elapsed="$elapsed ms"
+            fi
+            echo -n " ($elapsed)"
+        fi
+        echo
         unset _timer
     fi
+}
+
+
+# Runs before prompt is displayed
+function precmd() {
+    showTime
     computeState
 }
 

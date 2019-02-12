@@ -1,16 +1,16 @@
 # vim:ft=zsh ts=2 sw=2 sts=2
 
 
-prompt_time() {
-    #  echo -n "   %F{11}%f "
-    echo -n "%F{8}%D{%H:%M:%S}%f"
-    # elapsed is set in .zshrc precmd()
-    if [[ $elapsed ]]
-    then
-        echo -n " ($elapsed ms)"
-    fi
-    echo
-}
+# prompt_time() {
+#     #  echo -n "   %F{11}%f "
+#     echo -n "%F{8}%D{%H:%M:%S}%f"
+#     # elapsed is set in .zshrc precmd()
+#     if [[ $elapsed ]]
+#     then
+#         echo -n " ($elapsed ms)"
+#     fi
+#     echo
+# }
 
 ## Main prompt
 build_prompt() {
@@ -19,14 +19,15 @@ build_prompt() {
     pwdLeaf=$(basename $pwdPath)
     pwdParentPath=${pwdPath:a:h}
     
-    if [[ $elapsed ]]
-    then
-        echo
-    fi
-    if [[ $timer = "on" ]]
-    then
-        prompt_time
-    fi
+    # if [[ $elapsed ]]
+    # then
+    #     echo
+    # fi
+    # if [[ $timer = "on" ]]
+    # then
+    #     prompt_time
+    # fi
+    echo
     
     folderIcon=""
     if [[ "$pwdPath" = "$HOME" ]]

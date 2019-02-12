@@ -48,15 +48,15 @@ bgWhite="%{\e[107m%}";
 pad="%{\e[400@%}"
 
 
-prompt_time() {
-    echo -n "%F{8}%D{%H:%M:%S}%f"
-    # elapsed is set in prompt.zsh function precmd()
-    if [[ -n $elapsed ]]
-    then
-        echo -n " ($elapsed ms)"
-    fi
-    echo
-}
+# prompt_time() {
+#     echo -n "%F{8}%D{%H:%M:%S}%f"
+#     # elapsed is set in prompt.zsh function precmd()
+#     if [[ -n $elapsed ]]
+#     then
+#         echo -n " ($elapsed ms)"
+#     fi
+#     echo
+# }
 
 ## Main prompt
 build_prompt() {
@@ -93,11 +93,11 @@ build_prompt() {
         secondaryTextColor=${(P)_secondaryTextColor}
     fi
     
-    if [[ $timer = "on" ]]
-    then
-        echo
-        prompt_time
-    fi
+    # if [[ $timer = "on" ]]
+    # then
+    #     echo
+    #     prompt_time
+    # fi
     
     
     # Show minimal prompt if state has not changed
